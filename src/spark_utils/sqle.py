@@ -30,7 +30,8 @@ class SQLRunner(object):
         self.show = show
 
     def run_sql(self, sql_stmt):
-        msg = 'exec stmt=%s: "%s"' % (self.stmt_idx, sql_stmt)
+        sql, coming_from = sql_stmt
+        msg = 'exec stmt[idx=%s, src=%s]: "%s"' % (self.stmt_idx, coming_from, sql)
         self.stmt_idx += 1
         if not self.sql_context:
             msg = '[DRY] ' + msg
@@ -40,7 +41,7 @@ class SQLRunner(object):
         if not self.sql_context:
             return 
 
-        df = self.sql_context.sql(sql_stmt)
+        df = self.sql_context.sql(sql)
         if df and self.show:
             df.show()
         return df
