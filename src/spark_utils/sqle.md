@@ -59,8 +59,10 @@ You can specify multiple sql files.
 sqle.py a.sql b.sql c.sql -x A=s3://mybk/a B=s3://mybk/b --dry
 ```
 
+Or you could simply specify the dir for src, the ```sqle.py``` will recursively list all files under the directory and compile and render them into one SQL. 
 
-If you are happy with the SQL, you can remove the --dry and simply use spark-submit with sqle.
+
+If you are happy with the SQL, you can remove the ```--dry``` and simply use spark-submit with sqle.
 For example:
 
 ```
