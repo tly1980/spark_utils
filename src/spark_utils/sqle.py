@@ -21,7 +21,7 @@ class SQLRunner(object):
         self.show = show
 
     def run_sql(self, sql_stmt):
-        df = self.sqlContext.sql(sql_stmt)
+        df = self.sql_context.sql(sql_stmt)
         if df and self.show:
             df.show()
         return df
