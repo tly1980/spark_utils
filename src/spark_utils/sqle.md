@@ -26,7 +26,7 @@ OPTIONS (path "{B}", header "true");
 3) and you want to run a SQL query like:
 
 ```SQL
-SELECT A.name, B.age from A INNER JOIN B on A.id = B.id
+SELECT * from TBL_A INNER JOIN TBL_B on TBL_A.id = TBL_B.id
 ```
 
 With ```sqle```, you can simply do:
