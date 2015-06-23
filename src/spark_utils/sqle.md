@@ -76,14 +76,15 @@ Usage
 ```
 usage: sqle.py [-h] [-x X [X ...]] [--quiet] [--dry] [--nohive] src [src ...]
 
-Spark SQL executor
+Spark SQL enhancer / template render
 
 positional arguments:
   src
 
 optional arguments:
   -h, --help    show this help message and exit
-  -x X [X ...]  Override the permissions.
+  -x X [X ...]  Specify the template variables. Please put it as "-x a=AAA
+                b=BBB c=CCC"
   --quiet       Not show
   --dry         Dry run
   --nohive      Use SqlContext rather than HiveContext.
