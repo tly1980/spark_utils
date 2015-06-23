@@ -32,7 +32,9 @@ SELECT * from TBL_A INNER JOIN TBL_B on TBL_A.id = TBL_B.id
 With ```sqle```, you can simply do:
 
 ```BASH
-sqle.py table.sql "SELECT * from TBL_A INNER JOIN TBL_B on TBL_A.id = TBL_B.id" -x A=s3://mybk/a B=s3://mybk/b  --dry
+sqle.py table.sql "SELECT * from TBL_A INNER JOIN TBL_B on TBL_A.id = TBL_B.id" \
+  -x A=s3://mybk/a B=s3://mybk/b \
+  --dry
 ```
 
 It will output to STDOUT as:
@@ -63,10 +65,12 @@ Or you could simply specify the dir for src, the ```sqle.py``` will recursively 
 
 
 If you are happy with the SQL, you can remove the ```--dry``` and simply use spark-submit with sqle.
+
 For example:
 
 ```
-spark-submit sqle.py table.sql 'SELECT * from TBL_A INNER JOIN TBL_B on TBL_A.id = TBL_B.id' -x A=s3://mybk/a B=s3://mybk/b
+spark-submit sqle.py table.sql 'SELECT * from TBL_A INNER JOIN TBL_B on TBL_A.id = TBL_B.id'\
+  -x A=s3://mybk/a B=s3://mybk/b
 ```
 
 
