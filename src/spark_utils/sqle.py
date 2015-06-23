@@ -13,33 +13,36 @@ class DrySQLContext(object):
     def sql(self, stmt):
         print "Dry run: " + stmt
 
+
+class SQLRunner(object):
+    def __init__(self, sql_context, show):
+        self.stmt_idx = 0
+        self.sql_context = sql_context
+        self.show = show
+
+    def run_sql(self, sql_stmt):
+        df = self.sqlContext.sql(sql_stmt)
+        if df and self.show:
+            df.show()
+        return df
+
 def x_params(x_pairs):
     return dict([ x.split('=') for x in x_pairs])
 
-class SQLRunner(object):
-    def __init__(self, sql_context):
-        self.sql_context = sql_context
-
-
-def sql_content(sql_str, params):
+def x_sql_content(sql_str, params):
     if sql_str[0] in ['.', '/']:
         with open(sql_str) as f:
             sql_str = f.read()
 
     return sql_str.format(**params)
 
-def sql_stmt(sql_contents):
+def x_sql_stmt(sql_contents):
     for sql in sql_contents:
         for stmt in sql.split(';'):
             stmt2 = stmt.strip()
             if stmt2:
                 yield stmt2
 
-def run_sql(sqlContext, sql_stmt, show):
-    df = sqlContext.sql(sql_stmt)
-    if df and show:
-        df.show()
-    return df
 
 def main(args):
     if not args.dry:
@@ -48,19 +51,19 @@ def main(args):
 
         sc = SparkContext(appName=__file__)
         if args['no-hive']:
-            sqlContext = SQLContext(sc)
+            sql_context = SQLContext(sc)
         else:
-            sqlContext = HiveContext(sc)
+            sql_context = HiveContext(sc)
     else:
-        sc = None
-        sqlContext = DrySQLContext()
+        sql_context = DrySQLContext()
 
+    runner = SQLRunner(sql_context, args.show)
     params = x_params(args.x)
 
-    sql_cnts = [ sql_content(s, params) for s in args.sql ]
+    sql_cnts = [ x_sql_content(s, params) for s in args.sql ]
 
-    for stmt in sql_stmt(sql_cnts):
-        run_sql(sqlContext, stmt, args.show)
+    for stmt in x_sql_stmt(sql_cnts):
+        runner.run_sql(stmt)
 
 
 if __name__ == '__main__':
