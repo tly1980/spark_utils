@@ -31,7 +31,7 @@ class SQLRunner(object):
 
     def run_sql(self, sql_stmt):
         sql, coming_from = sql_stmt
-        msg = '-- stmt[idx=%s, src=%s]:\n%s\n' % (self.stmt_idx, coming_from, sql)
+        msg = '-- stmt_%s, src: %s\n%s\n' % (self.stmt_idx, coming_from, sql)
         self.stmt_idx += 1
         if not self.sql_context:
             print msg
