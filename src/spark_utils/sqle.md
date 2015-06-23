@@ -26,6 +26,23 @@ SELECT A.name, B.age from A INNER JOIN B on A.id = B.id
 
 With ```sqle```, you can simply do:
 
+```BASH
+sqle.py table.sql 'SELECT A.name, B.age from A INNER JOIN B on A.id = B.id' -x A=s3://mybk/a B=s3://mybk/b --dry
 ```
-spark-submit sqle.py table.sql 'SELECT A.name, B.age from A INNER JOIN B on A.id = B.id'
+
+It will output to stdio as:
+```SQL
+-- stmt[idx=0, src=table.sql]:
+CREATE temporary table TBL_A
+USING com.databricks.spark.csv
+OPTIONS (path "s3://mybk/a", header "true");
+
+-- stmt[idx=1, src=table.sql]:
+CREATE temporary table TBL_B
+USING com.databricks.spark.csv
+OPTIONS (path "s3://mybk/b", header "true");
+
+-- stmt[idx=2, src=<FROM ARGS>]:
+select * from A;
 ```
+
