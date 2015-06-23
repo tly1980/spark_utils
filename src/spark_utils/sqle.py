@@ -31,15 +31,13 @@ class SQLRunner(object):
 
     def run_sql(self, sql_stmt):
         sql, coming_from = sql_stmt
-        msg = 'exec stmt[idx=%s, src=%s]: "%s"' % (self.stmt_idx, coming_from, sql)
+        msg = '-- stmt[idx=%s, src=%s]:\n%s\n' % (self.stmt_idx, coming_from, sql)
         self.stmt_idx += 1
         if not self.sql_context:
-            msg = '[DRY] ' + msg
-
-        self.logger.info(msg)
-
-        if not self.sql_context:
-            return 
+            print msg
+            return
+        else:
+            self.logger.info(msg)
 
         df = self.sql_context.sql(sql)
         if df and self.show:
@@ -80,7 +78,7 @@ def x_sql_stmt(cnt):
     for stmt in cnt.split(';'):
         stmt2 = stmt.strip()
         if stmt2:
-            yield stmt2
+            yield stmt2 + ';'
 
 def x_file(src_file, params):
     with open(src_file) as f:
