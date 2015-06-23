@@ -6,7 +6,8 @@ import os
 
 AP = argparse.ArgumentParser(description="Spark SQL enhancer / template render")
 AP.add_argument('src', nargs='+')
-AP.add_argument('-x', nargs='+', type=str, default=[], help="Override the permissions.")
+AP.add_argument('-x', nargs='+', type=str, default=[], help='''Specify the template variables.
+    Please put it as "-x a=AAA b=BBB c=CCC"''')
 AP.add_argument('--quiet', action='store_false', dest='show', help='Not show')
 AP.add_argument('--dry', action='store_true', default=False, help="Dry run")
 AP.add_argument('--nohive', action='store_true', default=False, help="Use SqlContext rather than HiveContext.")
