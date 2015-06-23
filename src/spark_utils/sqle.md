@@ -5,7 +5,9 @@ Spark-SQL is awesome and I kindly wanted to use it for everything. Well probably
 
 sqle is a python command line tool that intended to make Spark-SQL easy.
 
-Let say you have a file ```table.sql```. For people who familiar with python might already notices that there are some template variables in the file.
+Let say:
+
+1) you have a file ```table.sql```. For people who familiar with python might already notices that there are some template variables in the file.
 
 ```SQL
 CREATE temporary table TBL_A
@@ -18,7 +20,10 @@ OPTIONS (path "{B}", header "true");
 
 ```
 
-And you want to run a query:
+2) you want to run a query and you want to specify template variable ```{A}``` and ```{B}``` to
+```s3://mybk/a``` and ```s3://mybk/b```.
+
+3) and you want to run a SQL query like:
 
 ```SQL
 SELECT A.name, B.age from A INNER JOIN B on A.id = B.id
@@ -27,10 +32,12 @@ SELECT A.name, B.age from A INNER JOIN B on A.id = B.id
 With ```sqle```, you can simply do:
 
 ```BASH
-sqle.py table.sql 'SELECT A.name, B.age from A INNER JOIN B on A.id = B.id' -x A=s3://mybk/a B=s3://mybk/b --dry
+sqle.py table.sql 'SELECT A.name, B.age from A INNER JOIN B on A.id = B.id'
+-x A=s3://mybk/a B=s3://mybk/b --dry
 ```
 
-It will output to stdio as:
+It will output to STDOUT as:
+
 ```SQL
 -- stmt[idx=0, src=table.sql]:
 CREATE temporary table TBL_A
@@ -46,3 +53,36 @@ OPTIONS (path "s3://mybk/b", header "true");
 select * from A;
 ```
 
+You can specify multiple sql files.
+```BASH
+sqle.py a.sql b.sql c.sql -x A=s3://mybk/a B=s3://mybk/b --dry
+```
+
+
+If you are happy with the SQL, you can remove the --dry and simply use spark-submit with sqle.
+For example:
+
+```
+spark-submit sqle.py table.sql 'SELECT A.name, B.age from A INNER JOIN B on A.id = B.id'
+-x A=s3://mybk/a B=s3://mybk/b
+```
+
+
+Usage
+-----
+
+```
+usage: sqle.py [-h] [-x X [X ...]] [--quiet] [--dry] [--nohive] src [src ...]
+
+Spark SQL executor
+
+positional arguments:
+  src
+
+optional arguments:
+  -h, --help    show this help message and exit
+  -x X [X ...]  Override the permissions.
+  --quiet       Not show
+  --dry         Dry run
+  --nohive      Use SqlContext rather than HiveContext.
+```

@@ -4,7 +4,7 @@ import logging
 import os
 
 
-AP = argparse.ArgumentParser(description="Spark SQL executor")
+AP = argparse.ArgumentParser(description="Spark SQL enhancer / template render")
 AP.add_argument('src', nargs='+')
 AP.add_argument('-x', nargs='+', type=str, default=[], help="Override the permissions.")
 AP.add_argument('--quiet', action='store_false', dest='show', help='Not show')
