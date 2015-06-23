@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import argparse
+import logging
+
 
 AP = argparse.ArgumentParser(description="Spark SQL executor")
 AP.add_argument('sql', nargs='+')
@@ -9,18 +11,34 @@ AP.add_argument('--dry', action='store_true', default=False, help="Dry run")
 AP.add_argument('--no-hive', action='store_true', default=False, help="Use SqlContext rather than HiveContext.")
 
 
-class DrySQLContext(object):
-    def sql(self, stmt):
-        print "Dry run: " + stmt
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(name)-2s %(levelname)-2s %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S')
+# define a Handler which writes INFO messages or higher to the sys.stderr
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
 
 
 class SQLRunner(object):
     def __init__(self, sql_context, show):
+        self.logger = logging.getLogger(
+            self.__class__.__name__)
         self.stmt_idx = 0
         self.sql_context = sql_context
         self.show = show
 
     def run_sql(self, sql_stmt):
+        msg = 'exec stmt=%s: "%s"' % (self.stmt_idx, sql_stmt)
+        self.stmt_idx += 1
+        if not self.sql_context:
+            msg = '[DRY] ' + msg
+
+        self.logger.info(msg)
+
+        if not self.sql_context:
+            return 
+
         df = self.sql_context.sql(sql_stmt)
         if df and self.show:
             df.show()
@@ -55,7 +73,7 @@ def main(args):
         else:
             sql_context = HiveContext(sc)
     else:
-        sql_context = DrySQLContext()
+        sql_context = None
 
     runner = SQLRunner(sql_context, args.show)
     params = x_params(args.x)
